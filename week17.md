@@ -21,7 +21,7 @@ I have an ongoing [PR to check the network on start and reset the db](https://gi
 
 
 ## Ephemery Repo
-I updated the Ephemery repo with the current client implementation changes. Here is a link to the [PR]()
+I updated the Ephemery repo with the current client implementation changes. Here is a link to the [PR](https://github.com/ephemery-testnet/ephemery-resources/pull/12)
 
 ## What I will do next week
 - Follow up on the reset PR and continue working on the DB reset implementation on Teku
