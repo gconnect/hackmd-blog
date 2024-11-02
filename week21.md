@@ -18,7 +18,7 @@ I added documentation to the Teku documentation to reflect the Ephemery implemen
 I also added documentation content to the Besu documentation to reflect the Ephemery work done on Besu. This will help users easily know what to do when they need to run Ephemery network. Here is a link to the [PR to Add documentation for Ephemery](https://github.com/hyperledger/besu-docs/pull/1727).
 
 ## Ephemery Repo
-I updated the client implementation file in the Ephemery repo to reflect the current state of implementation and documentation work done on both Besu and Teku client pairs. Here is a link to the [merged PR to update the client implementation status for Besu and Teku](https://github.com/ephemery-testnet/ephemery-resources/pull/15)
+I updated the client implementation file in the Ephemery repo to reflect the current state of implementation and documentation work done on both Besu and Teku client pairs. Here is a link to the [opened PR to update the client implementation status for Besu and Teku](https://github.com/ephemery-testnet/ephemery-resources/pull/15)
 
 ## Ethereum Website
 The minor fix I made on the official Ethereum website a couple of weeks ago was also merged some weeks back. Here is a link to the [merged PR to fix issues with table format](https://github.com/ethereum/ethereum-org-website/pull/13870)
