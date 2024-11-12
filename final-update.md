@@ -34,11 +34,32 @@ To achieve the native support on Besu, I made some update to the following files
 - `NetworkName.java`: This was where I added the base Ephemery genesis file and chainId.
 - `BesuCommandTest`: Here are added test to check Ephemery values are used.
 - `NetworkDeprecationMessageTest.java`: Added Ephemery to the Network Deprecation Test to generate deprecation message for deprecated networks. And this will most likely never happen Ephemery as this type of network are not easily deprecated.
-- `EphemeryGenesisFile`: Created a custom EphemeryGenesisFile class to check for updates and override the existing genesis config with the updated data. The logic for this was done with following the [Ephemery EIP 6916](https://eips.ethereum.org/EIPS/eip-6916)
+- `EphemeryGenesisUpdater`: Created a custom EphemeryGenesisUpdater class  with an updateGenesis method to check for updates and override the existing genesis config with the updated data. The logic for this was done with following the [Ephemery EIP 6916](https://eips.ethereum.org/EIPS/eip-6916)
 - `BesuCommandTest`: Added check for Ephemery on the BesuCommandTest file.
-- `EphemeryGenesisFileTest`: Wrote test to cover different scenarios when performing the genesis update to ensure the update happens as at when due and only applies to Ephemery network.
+- `EphemeryGenesisUpdaterTest`: Wrote test to cover different scenarios when performing the genesis update to ensure the update happens as at when due and only applies to Ephemery network.
 - `ephemery.json`: Added Ephemery genesis config file to the resource directory and updated the existing genesis file to suit the genesis file structure used on Besu. Addded th`ethhash` variable, `discovery` and array of `bootnodes.`
 - `changelog.md`: Updated the changelog.md file with the Ephemery Implementation done
+
+
+### Teku Client Implementation
+To achieve the native support and Ephemery reset feature on Teku, I made the following changes to the existing Teku codebase;
+
+##### Genesis Function
+- `Eth2NetworkConfiguration.java`: Added Ephemery network config. Added the discovery bootnodes, intial state and genesis state urls. Also did a check for Ephemery and call the Ephemery update method to perform the necessary update when due.
+- `Eth2NetworkConfigurationTest.java`: Updated the test file to include Ephemery.
+- `DepositSnapshotsBundleTest.java`: Added RPC URL for Ephemery
+- `ephemery.yaml`: Created an `ephemery.yaml` config file and added it to the config resource directory. I updated the existing ephemery config file, I removed unnecessary params to align with the acceptable Teku config.
+- `changelog.md`: Updated the changelog.md file to reflect the Ephemery implementation work done.
+- `EphemeryNetwork`: Created EphemeryNetwork custom class with an update method to dynamically update the genesis config and load the updated SSZ file as at when due in line with [Ephemery EIP 6916](https://eips.ethereum.org/EIPS/eip-6916)
+-`EphemeryNetworkTest`: Wrote test to test the different scenarios. To ensure the config file is updated and only for Ephemery.
+
+##### Genesis Reset
+- `DatabaseNetwork.java`: Added extra constructor and param to easily check the network using the deposit chain id and deposit contract address. Also called the custom Ephemery exception here, such that appropriate exception is thrown on Ephemery.
+- `DatabaseNetworkTest.java`: Update the database network and check if the network is Ephemery. Also updated the test file. To test readAndWrite to the db with and without the chainId.
+- `VersionedDatabaseFactory.java`: Updated the Database.Init method call to include the deposit chain id extra param. Created custom method to reset and delete specific files from the db and also perform a check to ensure that the reset is required before calling it in the `createDatabase` method.
+- `EphemerySlotValidationService`: I created a custom function which implements the SlotEventsChannel interface to check for the max slot.
+- `EphemerySlotValidationServiceTest`: This handles test for different scenarios like check if slot is within the accpetable range and also check if slot is too far ahead and other checks.
+- `BesuChainController.java`: Updated this file to call the EphemerySlotValidation class instance on start to subscribe and unsubscribe onStop.
 
 
 ### Current State
@@ -75,7 +96,7 @@ Here is a breakdown of the implementation work done on both clients.
 - [Ephemery reset on teku - create EphemerySlotValidationService and test](https://github.com/Consensys/teku/pull/8759)
 - [Add client implementation status on Ephemery repo](https://github.com/ephemery-testnet/ephemery-resources/pull/10)
 - [Besu update on Ephemery repo](https://github.com/ephemery-testnet/ephemery-resources/pull/12)
-- [Add update for Besu and Teku on Ephemry repo](https://github.com/ephemery-testnet/ephemery-resources/pull/15)
+- [Add update for Besu and Teku on Ephemery repo](https://github.com/ephemery-testnet/ephemery-resources/pull/15)
 - [Add documentation for Ephemery on Besu](https://github.com/hyperledger/besu-docs/pull/1727)
 - [Add documentation for Ephemery on Teku doc]( https://github.com/Consensys/doc.teku/pull/621)
 
