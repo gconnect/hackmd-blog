@@ -19,11 +19,27 @@ Here is a link to my initial [project proposal](https://github.com/eth-protocol-
 ### Initial Status
 Before my implementation,  Ephemery only had native support for Geth, Reth, Lighthouse and Lodestar clients. Specificlly focused on the genesis function with genesis reset still in progress for the above mentioned clients. These implementations were done by past EPF fellows.
 
-Also there was no way of tracking the client implementation work done. Which makes contribution a little difficult. Initially, I wasn't completely sure what work was left and what client implementation was needed. However, thanks to my mentor @Mario Harvel for pointing me to some resources and past fellow updates, which gave me a better idea of what I needed to do.
+Also there was no way of tracking the client implementation work done. Which makes contribution a little difficult. Initially, I wasn't completely sure what work was left and what client implementation was needed. However, thanks to my mentor Mario Havel for pointing me to some resources and past fellow updates, which gave me a better idea of what I needed to do.
 
 Before my implementation, setting up Ephemery on Teku and Besu required a manual process of downloading the genesis files from the Ephemery repo locally to your machine and then using the commands provided by both clients to indicate the path to the genesis file and bootnodes.
 
 The process of doing this can be quite exhausting, and this calls for native implementation.
+
+## Besu and Teku Client Implementation Details
+Unlike other network implementation, Ephemery implementation on clients does not follow exactly the same pattern as other networks like Sepolia, holesky etc. This is because the network resets after a given period of time. And due to this network updates the chainId and genesis timestamp is usually not static and this calls for a custom implementation on clients.
+
+### Besu Client Implementation
+To achieve the native support on Besu, I made some update to the following files;
+
+- `NetworkName.java`: This was where I added the base Ephemery genesis file and chainId.
+- `BesuCommandTest`: Here are added test to check Ephemery values are used.
+- `NetworkDeprecationMessageTest.java`: Added Ephemery to the Network Deprecation Test to generate deprecation message for deprecated networks. And this will most likely never happen Ephemery as this type of network are not easily deprecated.
+- `EphemeryGenesisFile`: Created a custom EphemeryGenesisFile class to check for updates and override the existing genesis config with the updated data. The logic for this was done with following the [Ephemery EIP 6916](https://eips.ethereum.org/EIPS/eip-6916)
+- `BesuCommandTest`: Added check for Ephemery on the BesuCommandTest file.
+- `EphemeryGenesisFileTest`: Wrote test to cover different scenarios when performing the genesis update to ensure the update happens as at when due and only applies to Ephemery network.
+- `ephemery.json`: Added Ephemery genesis config file to the resource directory and updated the existing genesis file to suit the genesis file structure used on Besu. Addded th`ethhash` variable, `discovery` and array of `bootnodes.`
+- `changelog.md`: Updated the changelog.md file with the Ephemery Implementation done
+
 
 ### Current State
 After the implementation work was done on both the Besu and Teku client pairs. Ephemery now has native support for Teku and Besu. What this means is that we can now use `besu --network ephemery` flag on besu and `teku --network ephemery` flag on the Teku, similar to what is obtainable with other supported networks on both clients.
@@ -61,12 +77,14 @@ Here is a breakdown of the implementation work done on both clients.
 - [Besu update on Ephemery repo](https://github.com/ephemery-testnet/ephemery-resources/pull/12)
 - [Add update for Besu and Teku on Ephemry repo](https://github.com/ephemery-testnet/ephemery-resources/pull/15)
 - [Add documentation for Ephemery on Besu](https://github.com/hyperledger/besu-docs/pull/1727)
+- [Add documentation for Ephemery on Teku doc]( https://github.com/Consensys/doc.teku/pull/621)
 
 ### Other Merged PRs Not related to Ephemery Implementation
 - [fromBytes fromHexString on Teku](https://github.com/Consensys/teku/pull/8573) 
 - [parameterise consolidation contract address on Besu](https://github.com/hyperledger/besu/pull/7647 )
 - [Ethereum Website - Fix issues with table format](https://github.com/ethereum/ethereum-org-website/pull/13870)
 - [Ethereum Protocol Fellowship Wiki - Create content for scourge under the staking economics track ](https://github.com/eth-protocol-fellows/protocol-studies/pull/300)
+
 
 ### Ephemery Implementation Open Issues and PRs
 
@@ -75,7 +93,6 @@ Here is a breakdown of the implementation work done on both clients.
 - [Ephemery Reset Feature on Besu](https://github.com/hyperledger/besu-docs/issues/1726)
 
 #### Open PRs
-- [Add documentation for Ephemery on Teku doc]( https://github.com/Consensys/doc.teku/pull/621)
 -  [Update the client implementation status for Besu and Teku on Ephemery repo](https://github.com/ephemery-testnet/ephemery-resources/pull/15)
 
 ### Screenshots From Besu and Teku Node Interactions
@@ -122,7 +139,7 @@ I became uncomfortable about how little I knew about the Ethereum Protocol, so w
 
 Afterward, I received a mail that my application was rejected but I can still join permissionlessly. When I saw that I could join permissionlessly, I was really excited because all that really mattered to me was to learn more about the Protocol and I knew joining the fellowship was the easiest way for me to achieve that.
 
-Week 0 of the fellowship and the first office hour by Tim Becko was a really insightful one, as I learnt about EIPs and Ethereum governance. The subject of EIP was really interesting for me because I have been seeing EIPs but didn't really know much about them.
+Week 0 of the fellowship and the first office hour by Tim Beiko was a really insightful one, as I learnt about EIPs and Ethereum governance. The subject of EIP was really interesting for me because I have been seeing EIPs but didn't really know much about them.
 
 Fast forward, at the start of the fellowship during office hours and stand-up, I was really intimidated by some of the Fellows, because I felt they knew alot and I was just beginning my journey. Some of the terminologies and abbreviations used during this calls was really difficult to grapes. But in order to meetup with the pace of the fellowship, I commited weeks to learning everything I could by going through the entire [Ethereum Protocol Study Group Wiki](https://epf.wiki/), [Ethereum roadmap](https://ethereum.org/en/roadmap/), [Ethereum Yellow Paper](https://ethereum.github.io/yellowpaper/paper.pdf) and the consume all the content on the [Ethereum Protocol Fellowship channel](https://www.youtube.com/@ethprotocolfellows/streams). I also did series of practice on how to run a node, by running different nodes and observing how it works. I also created a [video on how to run a geth and prysm node](https://youtu.be/tM5qmGFBETM).
 
@@ -143,14 +160,14 @@ With the knowledge gained from learning about the Consensus and Execution layer 
 
 As I have had the opportunity to learn more about nodes, Ethereum network, what it takes to maintain a network and how the EL and CL come together. 
 
-Given the unique nature of Ephemery implementation on clients, I have also had the opportunity to brush up on my Java skills and improve on my ability to write test and to write code following an EIP, specifically the [Ephemery EIP6916](https://eips.ethereum.org/EIPS/eip-6916)
+Given the unique nature of Ephemery implementation on clients, I have also had the opportunity to brush up on my Java skills and improve on my ability to write test and to write code following an EIP, specifically the [Ephemery EIP 6916](https://eips.ethereum.org/EIPS/eip-6916)
 
-I have also had the privilege to be mentored by some of the great minds within the Ethereum Protocol worthy of mention are Paul Harris from the Teku team, very patient with me and always quick to respond to my questions. Sally Macfarlane from the Besu team who was also there to guide my implementation work on the Besu client. pk910 and Mario Harvel from the Ephemery team who were always there to help me out with anything I needed to move forward with the project. And thanks to Holly one of the past fellow and Ephemery contributor for sharing some of your updates with me. They were really useful in giving me a sense of direction.
+I have also had the privilege to be mentored by some of the great minds within the Ethereum Protocol worthy of mention are Paul Harris from the Teku team, very patient with me and always quick to respond to my questions. Sally Macfarlane from the Besu team who was also there to guide my implementation work on the Besu client. pk910 and Mario Havel from the Ephemery team who were always there to help me out with anything I needed to move forward with the project. And thanks to Holly one of the past fellow and Ephemery contributor for sharing some of your updates with me. They were really useful in giving me a sense of direction.
 
 
 ## Feedback about EPF
  
- I think the idea of EPF is a very good one, as it gives newbies into protocol contribution a learning ground where they can get comfortable and have the opportunity to meet with approachable OGs within the Ethereum Protocol. 
+ I think the idea of EPF is a very good one, as it gives newbies into protocol contribution a learning ground where they can get comfortable and have the opportunity to meet with approachable OGs within the Ethereum Protocol. Thanks to Josh and Mario for putting this together!
 
 I would love to see this initiative continue running. During one of  the weekly stand breakout rooms when I shared my experience, one of the fellows mentioned that things would have been a lot easier for me if I started with the Ethereum Protocol Study Group, which is very correct. 
 
